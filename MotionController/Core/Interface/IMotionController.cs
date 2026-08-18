@@ -24,6 +24,10 @@ namespace MotionController.Core.Interface
         /// </summary>
         string CardBand {  get;}
         /// <summary>
+        /// 卡的句柄    
+        /// </summary>
+        IntPtr CardHandle { get; }
+        /// <summary>
         /// 链接控制卡
         /// </summary>
         void Connect();

@@ -2,8 +2,8 @@
 {
     public enum AxisStatus
     {
-        /// <summary>离线/通信中断</summary>
-        Offline = 0,
+        /// <summary>未知状态，可能是驱动器未初始化或其他异常情况</summary>
+        Unknown = 0,
         /// <summary>已使能，空闲就绪（绿色常亮）</summary>
         Ready = 1,
         /// <summary>未使能（灰色/暗色）</summary>
@@ -25,6 +25,6 @@
         /// <summary>正软限位触发（橙色）</summary>
         SoftPositiveLimit = 10,
         /// <summary>负软限位触发（橙色）</summary>
-        SoftNegativeLimit = 11
+        SoftNegativeLimit = 11,
     }
 }

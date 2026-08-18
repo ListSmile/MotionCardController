@@ -14,5 +14,7 @@ namespace MotionController.Core.Interface
         void SetValue(bool value);
         void Revert();
         void SetPWM(double dutyCycle, double frequency);
+        void ON();
+        void OFF();
     }
 }

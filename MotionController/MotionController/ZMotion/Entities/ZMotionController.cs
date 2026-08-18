@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 
 namespace MotionController.MotionController.ZMotion.Entities
 {
+    /// <summary>
+    /// 正运动控制卡
+    /// </summary>
     public class ZMotionController : IMotionController
     {
         private bool _connected;
         private string _cardname;
         private string _cardband;
+        private IntPtr _cardHandle;
         public ZMotionController(string cardname, string cardband)
         {
             _cardname = cardname;
@@ -23,6 +27,7 @@ namespace MotionController.MotionController.ZMotion.Entities
         public string CardName => _cardname;
 
         public string CardBand => _cardband;
+        public IntPtr CardHandle => _cardHandle;
 
         public void Connect()
         {
@@ -42,7 +47,8 @@ namespace MotionController.MotionController.ZMotion.Entities
 
         public Task DisconnectAsync()
         {
-            throw new NotImplementedException();
+            _connected = false;
+            return Task.CompletedTask;
         }
 
         public IADConverter GetADConverter(int adConverterIndex)
@@ -52,7 +58,7 @@ namespace MotionController.MotionController.ZMotion.Entities
 
         public IAxis GetAxis(int axisIndex)
         {
-            throw new NotImplementedException();
+            return new ZMotionAxis(axisIndex,$"默认轴{axisIndex}", _cardHandle);
         }
 
         public IDAConverter GetDAConverter(int daConverterIndex)
@@ -67,12 +73,12 @@ namespace MotionController.MotionController.ZMotion.Entities
 
         public IInput GetInput(int inputIndex)
         {
-            throw new NotImplementedException();
+            return new ZMotionInput($"输入{inputIndex}",inputIndex,_cardHandle);
         }
 
         public IOutput GetOutput(int outputIndex)
         {
-            throw new NotImplementedException();
+            return new ZMotionOutput($"输出{outputIndex}", outputIndex, _cardHandle);
         }
 
         public IPSOManager GetPSOManager(int psoManagerIndex)

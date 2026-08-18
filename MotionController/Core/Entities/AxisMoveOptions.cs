@@ -14,10 +14,12 @@ namespace MotionController.Core.Entities
     /// <param name="Acceleration">加速度（单位/s²），默认值通常由驱动器内部设定</param>
     /// <param name="Deceleration">减速度（单位/s²），默认为加速度的 1.2 倍防止急停冲击</param>
     /// <param name="Jerk">加加速度（单位/s³），用于 S 型曲线规划，默认 0 表示梯形曲线</param>
-    public record MoveOptions(double Position, double Velocity,
+    /// <param name="destpos"> 目标位置</param>
+    /// <param name="Direction">运动方向,1 表示正向，-1 表示反向</param>
+    public record MoveOptions(float destpos,double Position, double Velocity,
         double Acceleration = 0,        // 0 通常代表使用驱动器默认值
         double? Deceleration = null,    // null 代表与 Acceleration 一致
-        double Jerk = 0)
+        double Jerk = 0,int Direction = 1)
     {
         // 内部计算实际使用的减速度
         public double EffectiveDeceleration => Deceleration ?? Acceleration * 1.2;

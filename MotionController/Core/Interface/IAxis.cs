@@ -10,6 +10,7 @@ namespace MotionController.Core.Interface
 {
     public interface IAxis
     {
+        int AxisIndex { get; }
         IAxisParam AxisParam { get; }
         string Name { get; }
         double Position { get; }
