@@ -10,11 +10,11 @@ namespace MotionController.MotionController.ZMotion.Entities
         private int _axisindex;
         private string _axisname;
         private IntPtr _cardHandle;
-        public ZMotionAxis(int axisindex, string axisname, IntPtr cardHandle)
+        public ZMotionAxis(IMotionController motionController,int axisindex, string axisname)
         {
             _axisindex = axisindex;
             _axisname = axisname;
-            _cardHandle = cardHandle;
+            _cardHandle = motionController.CardHandle;
         }
         public IAxisParam AxisParam => throw new NotImplementedException();
 

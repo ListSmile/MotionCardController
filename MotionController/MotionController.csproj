@@ -12,4 +12,8 @@
     <Folder Include="MotionController\Googol\" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /y /e &quot;$(ProjectDir)MotionController\ZMotion\Dll&quot; &quot;$(TargetDir)&quot;" />
+  </Target>
+
 </Project>

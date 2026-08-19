@@ -11,11 +11,11 @@ namespace MotionController.MotionController.ZMotion.Entities
         private string _name;
         private int _indexport;
         private IntPtr _handle;
-        public ZMotionOutput(string name, int indexport, nint handle)
+        public ZMotionOutput(IMotionController motionController,string name, int indexport)
         {
             _name = name;
             _indexport = indexport;
-            _handle = handle;
+            _handle = motionController.CardHandle;
         }
         /// <summary>
         /// 名称

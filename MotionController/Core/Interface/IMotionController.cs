@@ -31,6 +31,8 @@ namespace MotionController.Core.Interface
         /// 链接控制卡
         /// </summary>
         void Connect();
+        bool Init();
+        Task<bool> InitAsync();
         Task ConnectAsync();
         void Disconnect();
         Task DisconnectAsync();
