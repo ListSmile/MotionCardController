@@ -11,5 +11,6 @@ namespace MotionController.Core.Interface
         string Name { get; }
         int IndexPort { get; }
         bool Value { get; }
+        void SetName(string name);
     }
 }

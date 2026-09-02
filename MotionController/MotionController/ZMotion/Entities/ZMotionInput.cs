@@ -24,6 +24,12 @@ namespace MotionController.MotionController.ZMotion.Entities
         public int IndexPort => _indexport;
 
         public bool Value => GetValue();
+
+        public void SetName(string name)
+        {
+            _name = name;
+        }
+
         private bool GetValue() 
         {
             uint val = 0;

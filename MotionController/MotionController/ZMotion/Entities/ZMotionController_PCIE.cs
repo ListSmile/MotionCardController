@@ -1,9 +1,15 @@
-﻿using MotionController.Core.Interface;
+﻿using MotionController.Core.Entities;
+using MotionController.Core.Interface;
 using MotionController.ZMotion;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Encodings.Web;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
 
 namespace MotionController.MotionController.ZMotion.Entities
@@ -18,6 +24,31 @@ namespace MotionController.MotionController.ZMotion.Entities
         private string _cardband = "正运动";
         private IntPtr _cardHandle;
         private string _filepath;
+        /// <summary>
+        /// 正运动的轴字典，key为轴索引（轴号），value为轴对象
+        /// </summary>
+        private ConcurrentDictionary<int,IAxis> MotionAxisDictionary { get; set; } = new ConcurrentDictionary<int, IAxis>();
+        /// <summary>
+        /// 正运动的输入字典，key为输入索引（输入号），value为输入对象
+        /// </summary>
+        private ConcurrentDictionary<int, IInput> MotionInputDictionary { get; set; } = new ConcurrentDictionary<int, IInput>();
+        /// <summary>
+        /// 正运动的输出字典，key为输出索引（输出号），value为输出对象
+        /// </summary>
+        private ConcurrentDictionary<int, IOutput> MotionOutputDictionary { get; set; } = new ConcurrentDictionary<int, IOutput>();
+        /// <summary>
+        /// 正运动的编码器字典，key为编码器索引（编码器号），value为编码器对象
+        /// </summary>
+        private ConcurrentDictionary<int, IEncoder> MotionEncoderDictionary { get; set; } = new ConcurrentDictionary<int, IEncoder>();
+        /// <summary>
+        /// 正运动的AD转换器字典，key为AD转换器索引（AD转换器号），value为AD转换器对象
+        /// </summary>
+        private ConcurrentDictionary<int, IADConverter> MotionADConverterDictionary { get; set; } = new ConcurrentDictionary<int, IADConverter>();
+        /// <summary>
+        /// 正运动的DA转换器字典，key为DA转换器索引（DA转换器号），value为DA转换器对象
+        /// </summary>
+        private ConcurrentDictionary<int, IDAConverter> MotionDAConverterDictionary { get; set; } = new ConcurrentDictionary<int, IDAConverter>();
+
         public ZMotionController_PCIE(string cardname,string zmccfgfilepath)
         {
             _cardname = cardname;
@@ -45,53 +76,71 @@ namespace MotionController.MotionController.ZMotion.Entities
             
         }
 
-        public Task ConnectAsync()
+        public async Task ConnectAsync()
         {
-            //这里进行异步连接操作，返回一个Task对象
-            return Task.CompletedTask;
+            await Task.Run(Connect);
         }
 
         public void Disconnect()
         {
+            if (_cardHandle != 0)
+            {
+                Zmcaux.ZAux_Close(_cardHandle);
+                _cardHandle = 0;
+            }
             _connected = false; 
         }
 
-        public Task DisconnectAsync()
+        public async Task DisconnectAsync()
         {
-            _connected = false;
-            return Task.CompletedTask;
+            await Task.Run(Disconnect);
         }
-
+        /// <summary>
+        /// 获取AD转换器对象，如果不存在则创建一个新的AD转换器对象储存并返回
+        /// </summary>
+        /// <param name="adConverterIndex"></param>
+        /// <returns></returns>
         public IADConverter GetADConverter(int adConverterIndex)
         {
-            throw new NotImplementedException();
+            MotionADConverterDictionary.TryAdd(adConverterIndex, new ZMotionADConverter(this,adConverterIndex,$"默认AD转换器{adConverterIndex}"));
+            MotionADConverterDictionary.TryGetValue(adConverterIndex, out IADConverter adConverter);
+            return adConverter;
         }
-
         public IAxis GetAxis(int axisIndex)
         {
-            return new ZMotionAxis(this,axisIndex,$"默认轴{axisIndex}");
+            MotionAxisDictionary.TryAdd(axisIndex, new ZMotionAxis(this,axisIndex,$"默认轴{axisIndex}"));
+            MotionAxisDictionary.TryGetValue(axisIndex, out IAxis axis);
+            return axis;
         }
 
         public IDAConverter GetDAConverter(int daConverterIndex)
         {
-            throw new NotImplementedException();
+            MotionDAConverterDictionary.TryAdd(daConverterIndex, new ZMotionDAConverter(this,daConverterIndex,$"默认DA转换器{daConverterIndex}"));
+            MotionDAConverterDictionary.TryGetValue(daConverterIndex, out IDAConverter daConverter);
+            return daConverter;
         }
 
         public IEncoder GetEncoder(int encoderIndex)
         {
-            throw new NotImplementedException();
+            MotionEncoderDictionary.TryAdd(encoderIndex, new ZMotionEncoder(this,encoderIndex,$"默认编码器{encoderIndex}"));
+            MotionEncoderDictionary.TryGetValue(encoderIndex, out IEncoder encoder);
+            return encoder;
         }
 
         public IInput GetInput(int inputIndex)
         {
-            return new ZMotionInput(this,$"输入{inputIndex}",inputIndex);
+            MotionInputDictionary.TryAdd(inputIndex, new ZMotionInput(this,$"输入{inputIndex}", inputIndex));
+            MotionInputDictionary.TryGetValue(inputIndex, out IInput input);
+            return input;
         }
 
         public IOutput GetOutput(int outputIndex)
         {
-            return new ZMotionOutput(this,$"输出{outputIndex}", outputIndex);
+            MotionOutputDictionary.TryAdd(outputIndex, new ZMotionOutput(this,$"输出{outputIndex}", outputIndex));
+            MotionOutputDictionary.TryGetValue(outputIndex, out IOutput output);
+            return output;
         }
-
+        [Obsolete("暂未实现，敬请期待")]
         public IPSOManager GetPSOManager(int psoManagerIndex)
         {
             throw new NotImplementedException();
@@ -118,9 +167,9 @@ namespace MotionController.MotionController.ZMotion.Entities
             return true;
         }
 
-        public Task< bool> InitAsync()
+        public async Task< bool> InitAsync()
         {
-            return Task.Run(Init);
+            return await Task.Run(Init);
         }
 
         /// <summary>
@@ -140,6 +189,36 @@ namespace MotionController.MotionController.ZMotion.Entities
                     return tempstatus == 1;
                 }
                 Thread.Sleep(100);
+            }
+            return false;
+        }
+
+        public bool LoadConfig(string configFilePath)
+        {
+            FileStream fs = File.Create(configFilePath);
+            Utf8JsonWriter utf8writer = new Utf8JsonWriter(fs, new JsonWriterOptions { Indented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
+            JsonSerializer.Serialize(utf8writer,new AxisParaDefine { AxisName = "搬运轴"});
+            
+            //1.检查文件是否存在
+            if (File.Exists(configFilePath) == false)
+            {
+                return false;
+            }
+            //2.从文件读取
+            try
+            {
+                var filecfg = JsonSerializer.Deserialize<AxisParaDefine>(configFilePath);
+                if (filecfg != null)
+                {
+                   var currentaxis =  GetAxis(filecfg.AxisIndex);
+                    currentaxis.SetAxisName(filecfg.AxisName);
+
+                }
+                 
+            }
+            catch (Exception ex)
+            {
+
             }
             return false;
         }

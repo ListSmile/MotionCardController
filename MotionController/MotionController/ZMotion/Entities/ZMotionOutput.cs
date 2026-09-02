@@ -90,5 +90,9 @@ namespace MotionController.MotionController.ZMotion.Entities
             }
         }
 
+        public void SetName(string name)
+        {
+            _name = name;
+        }
     }
 }

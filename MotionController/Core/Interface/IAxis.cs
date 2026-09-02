@@ -21,5 +21,6 @@ namespace MotionController.Core.Interface
         void Move_Continuous(MoveOptions options);
         void Stop();
         void Alarm_Reset();
+        void SetAxisName(string name);
     }
 }

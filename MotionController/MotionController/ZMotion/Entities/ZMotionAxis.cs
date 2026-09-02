@@ -142,5 +142,10 @@ namespace MotionController.MotionController.ZMotion.Entities
                 throw new Exception($"Stop failed with error code: {ret}");
             }
         }
+
+        public void SetAxisName(string name)
+        {
+            _axisname = name;
+        }
     }
 }

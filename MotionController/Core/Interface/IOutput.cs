@@ -11,6 +11,7 @@ namespace MotionController.Core.Interface
         string Name { get; }
         int IndexPort { get; }
         bool Value { get; set; }
+        void SetName(string name);
         void SetValue(bool value);
         void Revert();
         void SetPWM(double dutyCycle, double frequency);

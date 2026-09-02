@@ -32,6 +32,7 @@ namespace MotionController.Core.Interface
         /// </summary>
         void Connect();
         bool Init();
+        bool LoadConfig(string configFilePath);
         Task<bool> InitAsync();
         Task ConnectAsync();
         void Disconnect();
