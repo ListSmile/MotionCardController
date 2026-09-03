@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 
 /// <summary>
 /// 逻辑辅助工具（非阻塞延时 + 边沿检测）
 /// </summary>
 public class LogicHelper
 {
-    private DateTime? _delayStart;
+    private Stopwatch _delaySw = new Stopwatch();
     private int _delayMs;
     private bool _lastSignal;
 
@@ -14,7 +15,7 @@ public class LogicHelper
     /// </summary>
     public void Reset()
     {
-        _delayStart = null;
+        _delaySw.Reset();
         _lastSignal = false;
     }
 
@@ -23,7 +24,7 @@ public class LogicHelper
     /// </summary>
     public void ResetDelay()
     {
-        _delayStart = null;
+        _delaySw.Reset();
     }
 
     /// <summary>
@@ -39,16 +40,15 @@ public class LogicHelper
     /// </summary>
     public bool Delay(int milliseconds)
     {
-        if (!_delayStart.HasValue)
+        if (!_delaySw.IsRunning)
         {
-            _delayStart = DateTime.Now;
+            _delaySw.Restart();
             _delayMs = milliseconds;
             return false;
         }
-
-        if ((DateTime.Now - _delayStart.Value).TotalMilliseconds >= _delayMs)
+        if (_delaySw.ElapsedMilliseconds >= _delayMs)
         {
-            _delayStart = null;  // 完成后自动重置，下次调用将重新计时
+            _delaySw.Stop();
             return true;
         }
         return false;
