@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MotionController\MotionController.csproj" />
+    <ProjectReference Include="..\MotionLogic\MotionLogic.csproj" />
   </ItemGroup>
 
 </Project>

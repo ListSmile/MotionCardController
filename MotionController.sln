@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotionController", "MotionC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotionCardTestAPP", "MotionCardTestAPP\MotionCardTestAPP.csproj", "{24D3DD68-0D2A-4CD2-B9E6-FD61941C1573}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MotionLogic", "MotionLogic\MotionLogic.csproj", "{1FDA6CAC-8057-4E2E-8138-0891D5A8908F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{24D3DD68-0D2A-4CD2-B9E6-FD61941C1573}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24D3DD68-0D2A-4CD2-B9E6-FD61941C1573}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24D3DD68-0D2A-4CD2-B9E6-FD61941C1573}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FDA6CAC-8057-4E2E-8138-0891D5A8908F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FDA6CAC-8057-4E2E-8138-0891D5A8908F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FDA6CAC-8057-4E2E-8138-0891D5A8908F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FDA6CAC-8057-4E2E-8138-0891D5A8908F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
