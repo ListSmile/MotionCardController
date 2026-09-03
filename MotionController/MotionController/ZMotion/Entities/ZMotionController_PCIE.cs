@@ -195,10 +195,8 @@ namespace MotionController.MotionController.ZMotion.Entities
 
         public bool LoadConfig(string configFilePath)
         {
-            FileStream fs = File.Create(configFilePath);
-            Utf8JsonWriter utf8writer = new Utf8JsonWriter(fs, new JsonWriterOptions { Indented = true, Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping });
-            JsonSerializer.Serialize(utf8writer,new AxisParaDefine { AxisName = "搬运轴"});
-            
+
+            SerializationHelper.SaveToJson(new AxisParaDefine() { AxisIndex = 0, AxisName = "条件" }, configFilePath);
             //1.检查文件是否存在
             if (File.Exists(configFilePath) == false)
             {
@@ -207,7 +205,8 @@ namespace MotionController.MotionController.ZMotion.Entities
             //2.从文件读取
             try
             {
-                var filecfg = JsonSerializer.Deserialize<AxisParaDefine>(configFilePath);
+
+              var filecfg =  SerializationHelper.LoadFromJson<AxisParaDefine>(configFilePath);
                 if (filecfg != null)
                 {
                    var currentaxis =  GetAxis(filecfg.AxisIndex);

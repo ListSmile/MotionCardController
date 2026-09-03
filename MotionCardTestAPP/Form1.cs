@@ -18,7 +18,10 @@ namespace MotionCardTestAPP
             ZMotionAxis axis1 = new ZMotionAxis(motionController,0, "Axis1");
 
             motionController.LoadConfig("config.json");
-            var val = intput1.Value;
+
+
+            var axisreal = motionController.GetAxis(0);
+
         }
     }
 }
